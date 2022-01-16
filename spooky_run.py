@@ -99,7 +99,7 @@ pygame.init() #musi być wywołany na samym początku, to on rozpoczyna grę
 screen = pygame.display.set_mode((800,400))#okno ma wysokość 400 i szerokość 800
 pygame.display.set_caption('SpookyRun') # tytuł okna 
 clock = pygame.time.Clock() #clock pomoże nam z utrzymaniem odpowiedniej liczby klatek na sekundę 
-test_font = pygame.font.Font('font/Pixeltype.ttf', 50) #wczytujemy czcionkę, z którą można potem napisać tekst metodą render 
+test_font = pygame.font.Font('font/MonsterPumpkin.ttf', 50) #wczytujemy czcionkę, z którą można potem napisać tekst metodą render 
 game_active = False
 start_time = 0  # na początku czas musi wynosić 0 
 score = 0 # na początku rozgrywki mamy 0 punktów 
