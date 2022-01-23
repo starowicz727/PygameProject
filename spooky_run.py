@@ -7,7 +7,7 @@ class Player(pygame.sprite.Sprite):  # Sprite class zawiera surface i rectangle,
 	def __init__(self):				# dlatego Player musi dziedziczyć po Sprite
 		super().__init__()
 		player_walk_1 = pygame.image.load('graphics/player/walk_1.png').convert_alpha() # wczytujemy pierwszy obrazek chodu gracza 
-		player_walk_2 = pygame.image.load('graphics/player/walk_1.png').convert_alpha() # i drugi obrazek 
+		player_walk_2 = pygame.image.load('graphics/player/walk_2.png').convert_alpha() # i drugi obrazek 
 		self.player_walk = [player_walk_1,player_walk_2] # lista dwóch obrazków chodzenia 
 		self.player_index = 0 # na początku pokazujemy obrazek nr 1 
 		self.player_jump = pygame.image.load('graphics/player/jump.png').convert_alpha() # wczytujemy zdjęcie podskoku gracza
