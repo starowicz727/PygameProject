@@ -45,7 +45,7 @@ class Player(pygame.sprite.Sprite):  # Sprite class zawiera surface i rectangle,
 		self.apply_gravity()
 		self.animation_state()
 
-class Opponent(pygame.sprite.Sprite):
+class Obstacle(pygame.sprite.Sprite):
 	def __init__(self,type):
 		super().__init__()
 		
@@ -88,8 +88,8 @@ def display_score(): #get_ticks() mówi nam ile czasu minęło odkąd cała gra 
 	return current_time #zwracamy obecny czas żeby przypisywać go do punktacji 
 
 def collision_sprite():  # funkcja potrzebna do sprawdzania kolizji obiektow klasy Sprite 
-	if pygame.sprite.spritecollide(player.sprite,opponent_group,False): # jeśli doszło do kolizji
-		opponent_group.empty() # usuwamy wszystkich przeciwników 
+	if pygame.sprite.spritecollide(player.sprite,obstacle_group,False): # jeśli doszło do kolizji
+		obstacle_group.empty() # usuwamy wszystkich przeciwników 
 		return False # zwróć false (dzięki temu game_active=false  i rozgrywka się kończy)
 	else: 
 		return True
@@ -111,7 +111,7 @@ background_Music.play(loops = -1) # ustawiamy zapętlenie na nieskończenie wiel
 player = pygame.sprite.GroupSingle() # w pygame jest Group i GroupSingle() - i najpierw trzeba utworzyć taką grupę
 player.add(Player()) # tu dodajemy do single group naszego gracza 
 
-opponent_group = pygame.sprite.Group() # tworzymy grupę przeciwników
+obstacle_group = pygame.sprite.Group() # tworzymy grupę przeciwników
 												   #convert() przyspiesza grę, sprawia ze obrazek jest 'lepiej załadowany' w pythonie
 sky_surface = pygame.image.load('graphics/Sky.png').convert() # obrazek nieba będzie załadowany jako 1 
 ground_surface = pygame.image.load('graphics/ground.png').convert() # a nad nim będzie obrazek podłoża dlatego poinżej w screen.blit(ground_surface,(0,300))
@@ -128,8 +128,8 @@ game_message = test_font.render('Press space to start',False,(0,255,68))
 game_message_rect = game_message.get_rect(center = (400,330))
 
 # Timer do tworzenia przeciwników co pewnien czas
-opponent_timer = pygame.USEREVENT + 1 # tworzymy tu customowy event (dodajemy +1 żeby mieć pewność że dany userevent nie był zarezerwowany dla pygame)
-pygame.time.set_timer(opponent_timer,1500)  # który ma się wydarzyć co 1500 milisekund 
+obstacle_timer = pygame.USEREVENT + 1 # tworzymy tu customowy event (dodajemy +1 żeby mieć pewność że dany userevent nie był zarezerwowany dla pygame)
+pygame.time.set_timer(obstacle_timer,1500)  # który ma się wydarzyć co 1500 milisekund 
 
 while True:  # główna pętla gry 
 	for event in pygame.event.get():# tu sprawdzamy możliwy input gracza
@@ -138,8 +138,8 @@ while True:  # główna pętla gry
 			exit() #ten fragment zamknie pętle while=wyłączy całkowicie program 
 
 		if game_active:
-			if event.type == opponent_timer: #ustalamy prawdopodobieństwo=2/5 na wylosowanie nietoperza i 3/5 na wylosowanie pająka 
-				opponent_group.add(Opponent(choice(['bat','bat','spider','spider','spider']))) # tu tworzymy instancje naszych przeciwników 
+			if event.type == obstacle_timer: #ustalamy prawdopodobieństwo=2/5 na wylosowanie nietoperza i 3/5 na wylosowanie pająka 
+				obstacle_group.add(Obstacle(choice(['bat','bat','spider','spider','spider']))) # tu tworzymy instancje naszych przeciwników 
 		else: # gdy gra nie jest jeszcze aktywna
 			if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE: # gdy naciśniemy spację
 				game_active = True # gra staje się aktywna 
@@ -154,8 +154,8 @@ while True:  # główna pętla gry
 		player.draw(screen) # tu rysujemy/ wyświetlamy naszego gracza 
 		player.update()
 
-		opponent_group.draw(screen) # tu wyświetlamy/rysujemy naszych przeciwników 
-		opponent_group.update()
+		obstacle_group.draw(screen) # tu wyświetlamy/rysujemy naszych przeciwników 
+		obstacle_group.update()
 
 		game_active = collision_sprite() #tu sprawdzamy czy następują kolizje, które mogłyby skończyć grę 
 		
