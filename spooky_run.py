@@ -1,5 +1,5 @@
 import pygame 
-#c:\users\staro\appdata\local\packages\pythonsoftwarefoundation.python.3.9_qbz5n2kfra8p0\localcache\local-packages\python39\site-packages (2.1.0)
+
 from sys import exit
 from random import randint, choice
 
@@ -49,12 +49,12 @@ class Opponent(pygame.sprite.Sprite):
 	def __init__(self,type):
 		super().__init__()
 		
-		if type == 'bat':
+		if type == 'bat': #pierwszy przeciwnik jest nietoperzem
 			bat_1 = pygame.image.load('graphics/bat/bat1.png').convert_alpha() # wczytujemy pierwszy obrazek poruszania nietoperza 
 			bat_2 = pygame.image.load('graphics/bat/bat2.png').convert_alpha() # i drugi
 			self.frames = [bat_1,bat_2] # lista dwóch obrazków poruszania  
 			y_pos = 210 # pozycja tego przeciwnika jest wyższa niż kolejnego
-		else:
+		else:  # drugi przeciwnik jest pająkiem
 			spider_1 = pygame.image.load('graphics/spider/spider1.png').convert_alpha() # wczytujemy pierwszy obrazek poruszania pająka 
 			spider_2 = pygame.image.load('graphics/spider/spider2.png').convert_alpha() # i drugi
 			self.frames = [spider_1,spider_2] # lista dwóch obrazków poruszania 
@@ -70,19 +70,19 @@ class Opponent(pygame.sprite.Sprite):
 			self.animation_index = 0  # znowu ustawiamy index na 0
 		self.image = self.frames[int(self.animation_index)] # ustawiamy jeden z dwóch obrazków z tablicy 
 
+	def destroy(self):
+		if self.rect.x <= -100:  #gdy przeciwnik znika z planszy 
+			self.kill() # usuwamy obiekt 
+
 	def update(self):
 		self.animation_state()
 		self.rect.x -= 6 # przeciwnik będzie przesuwał się z każdą klatką w lewo 
 		self.destroy() # tu sprawdzamy czy należy już usunąć przeciwnika
 
-	def destroy(self):
-		if self.rect.x <= -100:  #gdy przeciwnik znika z planszy 
-			self.kill() # usuwamy obiekt 
-
                                                         #  v czyli od momentu w kodzie pygame.init()
 def display_score(): #get_ticks() mówi nam ile czasu minęło odkąd cała gra w pygame się rozpoczęła,a nie pojedyncza rozgrywka, 
 	current_time = int(pygame.time.get_ticks() / 1000) - start_time  # dlatego musimy odejmować start_time + dzielimy przez 1000 żeby liczby były mniejsze 
-	score_surf = test_font.render(f'Score: {current_time}',False,(0,255,68)) #tworzymy surface do wyświetlania wyników 
+	score_surf = text_font.render(f'Score: {current_time}',False,(0,255,68)) #tworzymy surface do wyświetlania wyników 
 	score_rect = score_surf.get_rect(center = (400,50))  #tworzymy rectangle dla score_surf i ustawiamy go na środku
 	screen.blit(score_surf,score_rect)
 	return current_time #zwracamy obecny czas żeby przypisywać go do punktacji 
@@ -99,15 +99,15 @@ pygame.init() #musi być wywołany na samym początku, to on rozpoczyna grę
 screen = pygame.display.set_mode((800,400))#okno ma wysokość 400 i szerokość 800
 pygame.display.set_caption('SpookyRun') # tytuł okna 
 clock = pygame.time.Clock() #clock pomoże nam z utrzymaniem odpowiedniej liczby klatek na sekundę 
-test_font = pygame.font.Font('font/MonsterPumpkin.ttf', 50) #wczytujemy czcionkę, z którą można potem napisać tekst metodą render 
+text_font = pygame.font.Font('font/MonsterPumpkin.ttf', 50) #wczytujemy czcionkę, z którą można potem napisać tekst metodą render 
 game_active = False
 start_time = 0  # na początku czas musi wynosić 0 
 score = 0 # na początku rozgrywki mamy 0 punktów 
 background_Music = pygame.mixer.Sound('audio/music.wav') # importujemy plik z muzyką na tło gry
-background_Music.set_volume(0.4)  # zmniejszamy głośność muzyki w tle
+background_Music.set_volume(0.1)  # zmniejszamy głośność muzyki w tle
 background_Music.play(loops = -1) # ustawiamy zapętlenie na nieskończenie wiele razy  
 
-#Groups
+#Grupy klas
 player = pygame.sprite.GroupSingle() # w pygame jest Group i GroupSingle() - i najpierw trzeba utworzyć taką grupę
 player.add(Player()) # tu dodajemy do single group naszego gracza 
 
@@ -116,15 +116,15 @@ opponent_group = pygame.sprite.Group() # tworzymy grupę przeciwników
 sky_surface = pygame.image.load('graphics/Sky.png').convert() # obrazek nieba będzie załadowany jako 1 
 ground_surface = pygame.image.load('graphics/ground.png').convert() # a nad nim będzie obrazek podłoża dlatego poinżej w screen.blit(ground_surface,(0,300))
 																	#dodajemy przesunięcie, żeby podłoże nie zasłaniało nieba
-# Intro screen
-player_stand = pygame.image.load('graphics/player/ghost_start.png').convert_alpha() #importujemy zdjęcie startowe
-player_stand = pygame.transform.rotozoom(player_stand,0, 0.40) #skalujemy zdjęcie startowe, żeby było ponad 2 razy mniejsze 
-player_stand_rect = player_stand.get_rect(center = (400,200))
+# To będzie na ekranie:
+ghost_startPng = pygame.image.load('graphics/player/ghost_start.png').convert_alpha() #importujemy zdjęcie startowe
+ghost_startPng = pygame.transform.rotozoom(ghost_startPng,0, 0.35) #skalujemy zdjęcie startowe, żeby było ponad 2 razy mniejsze 
+ghost_startPng_rect = ghost_startPng.get_rect(center = (400,200))
 
-game_name = test_font.render('Spooky  run',False,(0,255,68))
+game_name = text_font.render('Spooky  run',False,(0,255,68))
 game_name_rect = game_name.get_rect(center = (400,80))
 
-game_message = test_font.render('Press space to start',False,(0,255,68))
+game_message = text_font.render('Press space to start',False,(0,255,68))
 game_message_rect = game_message.get_rect(center = (400,330))
 
 # Timer do tworzenia przeciwników co pewnien czas
@@ -161,9 +161,9 @@ while True:  # główna pętla gry
 		
 	else:# jeśli gra się skończyła albo jeszcze nie zaczęła 
 		screen.fill((102,0,204)) #wypełniamy ekran kolorem 
-		screen.blit(player_stand,player_stand_rect)
+		screen.blit(ghost_startPng,ghost_startPng_rect)
 
-		score_message = test_font.render(f'Your score: {score}',False,(0,255,68))
+		score_message = text_font.render(f'Your score: {score}',False,(0,255,68))
 		score_message_rect = score_message.get_rect(center = (400,330))
 		screen.blit(game_name,game_name_rect)
 
